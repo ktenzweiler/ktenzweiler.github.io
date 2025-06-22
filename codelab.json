@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-06-22T04:03:46Z",
+  "id": "setup-build-environment",
+  "duration": 450,
+  "title": "Setup Environment",
+  "authors": "Kyle Enzweiler",
+  "summary": "In this codelab, you'll use Google Compute Engine to create a VM Instance to download the AOSP code and perform builds.",
+  "source": "1khrndUZlv_Y4Kg6-nW0Q5rZdKhnUnF0zL8bLnV3JthY",
+  "theme": "aosp",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "aosp"
+  ],
+  "tags": [
+    "android",
+    "aosp"
+  ],
+  "feedback": "https://github.com/googlecodelabs/your-first-pwapp/issues",
+  "url": "setup-build-environment"
+}

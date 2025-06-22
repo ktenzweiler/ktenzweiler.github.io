@@ -1,0 +1,298 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Setup Environment</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="setup-build-environment"
+                  title="Setup Environment"
+                  environment="web"
+                  feedback-link="https://github.com/googlecodelabs/your-first-pwapp/issues">
+    
+      <google-codelab-step label="Introduction" duration="0">
+        <p class="image-container"><img style="width: 624.00px" src="img/22f34ad2b43e12bb.png"></p>
+<p><strong>Last Updated:</strong> 2025-06-22</p>
+<h2 is-upgraded><strong>What should you expect?</strong></h2>
+<p>By the end of this codelab you will know how to set up your environment for building the Android Open Source Project. You will also know how to install the required dependencies, download the codebase, and make a build. This codelab lays the foundation necessary to navigate Google Cloud&#39;s Compute Engine, install the gcloud CLI, and create a virtualization enabled Ubuntu Virtual Machine instance. These skills will prepare you for employment in the field of embedded Android.</p>
+<h3 is-upgraded><strong>Cost</strong></h3>
+<p>My monthly costs for operating the Google Compute engine are about $100/month. You should expect your costs to be similar.</p>
+<aside class="warning"><p><strong>Note:</strong> The exact pricing of a VM Instance from Google Cloud Compute Engine can be found on their website here: <a href="https://cloud.google.com/compute/vm-instance-pricing?hl=en#section-1" target="_blank">https://cloud.google.com/compute/vm-instance-pricing?hl=en#section-1</a></p>
+</aside>
+<h3 is-upgraded><strong>Time</strong></h3>
+<p>Builds for AOSP take a long time and a powerful computer is required. A Compute Engine or a powerful workstation is necessary to handle the computational requirements. Also, the AOSP codebase has a lot of breadth and depth. There are numerous different languages and file types used in the AOSP and you will have to put forth the time and effort to learn how to use these languages and file types.</p>
+<h3 is-upgraded><strong>Prerequisites</strong></h3>
+<ul>
+<li>Basic Linux understanding (commands, bash scripts, code compilation, basic concepts)</li>
+<li>Access to a computer with a minimum of 64 GB of RAM and at least 16 cores</li>
+<li>Credit card to pay for your usage of a Google Cloud Compute Engine</li>
+</ul>
+<aside class="warning"><p><strong>Note: </strong>Google uses 72-core machines with 64 GB of RAM to build Android. With this hardware configuration, it takes approximately 40 minutes for a full build of Android and only a few minutes for incremental build of Android. By contrast, it takes approximately 6 hours for a full build with a 6-core machine with 64 GB of RAM.</p>
+</aside>
+<h2 is-upgraded><strong>What you&#39;ll build</strong></h2>
+<p>In this codelab, you&#39;re going to stand up a Google Cloud Compute Engine to host your AOSP project. You will then create a build to run on an emulator. Your build will be a pure AOSP image that runs on the Cuttlefish Emulator.</p>
+<h2 class="checklist" is-upgraded><strong>What you&#39;ll learn</strong></h2>
+<ul class="checklist">
+<li>How to create a VM instance using Google Cloud Compute Engine</li>
+<li>How to download and sync the Android Open Source Project</li>
+<li>How to make a build for a specific device</li>
+</ul>
+<h2 is-upgraded><strong>What you&#39;ll need</strong></h2>
+<ul>
+<li>A recent version of Chrome</li>
+<li>Knowledge of basic Linux commands</li>
+<li>A credit card to pay for your usage of Google Compute Engine</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Create the Project" duration="10">
+        <h2 is-upgraded><strong>Go to the Google Cloud Console</strong></h2>
+<h3 is-upgraded><strong>Create a Project</strong></h3>
+<p>Go to <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a> and click the <strong>Select a project</strong> button in the upper left side of the screen.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/3d061ab4df1bf5f7.png"></p>
+<p>Then click the <strong>New project</strong> button</p>
+<p class="image-container"><img style="width: 624.00px" src="img/6bf9e8b355b388c3.png"></p>
+<h3 is-upgraded><strong>Name the Project</strong></h3>
+<p>Name the project <strong>AOSP </strong>then click the <strong>Create</strong> button</p>
+<p class="image-container"><img style="width: 624.00px" src="img/5780e0c3701994d8.png"></p>
+<h3 is-upgraded><strong>Select the AOSP Project</strong></h3>
+<p>Click the notifications button in the upper right side of the screen and click the <strong>select project</strong> button from the notification.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/f29f3a970fdc1e81.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Install gcloud CLI" duration="10">
+        <h2 is-upgraded><strong>Download gcloud CLI</strong></h2>
+<p>The gcloud CLI will be used to run the commands to create the disk, image, and instance needed for the VM Instance.</p>
+<p><a href="https://cloud.google.com/sdk/docs/install-sdk" target="_blank"><paper-button class="colored" raised><iron-icon icon="file-download"></iron-icon>Download gcloud CLI</paper-button></a></p>
+<aside class="special"><p><strong>Note:</strong> You can perform all the necessary steps in the console rather than the CLI, but I prefer the CLI.</p>
+</aside>
+<aside class="warning"><p><strong>Note:</strong> You will need to enable billing in Google Cloud Console to create a VM instance. Do that first <a href="https://console.cloud.google.com/billing" target="_blank">https://console.cloud.google.com/billing</a></p>
+</aside>
+<h3 is-upgraded><strong>Confirm Python Version and XCode Command Line Tools </strong></h3>
+<p>Verify that you have the correct version of Python installed as well as the necessary XCode Command Line Tools(if on Mac). </p>
+<ol type="1" start="1">
+<li>Check which Python version you have installed</li>
+</ol>
+<pre>$ Python3 -V</pre>
+<pre>Python 3.12.10</pre>
+<ol type="1" start="2">
+<li>Check if you have XCode Command Line Tools installed</li>
+</ol>
+<pre>$ xcode-select -p</pre>
+<pre>/Library/Developer/CommandLineTools</pre>
+<h3 is-upgraded><strong>Download the google-cloud-cli</strong></h3>
+<p>Select the appropriate download for your machine, I have <strong>macOS 64-bit (x86_64)</strong>, to your home directory.<img style="width: 624.00px" src="img/fedf5f09ce0fd01.png"></p>
+<h3 is-upgraded><strong>Unzip</strong></h3>
+<p>In your terminal, cd to the directory where you downloaded the tar/zipped file. Ideally the home directory. Then unzip the file with: <br></p>
+<pre>$ tar -xf google-cloud-cli-darwin-x86_64.tar.gz</pre>
+<h3 is-upgraded><strong>Run the Install Script</strong></h3>
+<p>From the home directory, run</p>
+<pre>$ ./google-cloud-sdk/install.sh</pre>
+<p>Select yes for all the questions asked during installation.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/3ffc1374f1f05dbf.png"></p>
+<h3 is-upgraded><strong>Initialize gcloud CLI</strong></h3>
+<p>Initialize the gcloud CLI, then follow the instructions to authenticate:</p>
+<pre>$ ./google-cloud-sdk/bin/gcloud init</pre>
+<p>After you are authenticated, select the AOSP project you created in the beginning. Mine is option <code>1 </code></p>
+<p class="image-container"><img style="width: 624.00px" src="img/d70f2ea02b7953a8.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Create the Disk, Image, and VM Instance" duration="20">
+        <p>You will need to create a disk, image, and VM instance next. I have specified the size and os you will need. I have also specified the necessary options required to build the AOSP. For this codelab, we are going to use the gcloud CLI. If you are more comfortable with the console UI, then use that and select the appropriate options I specify in the commands.</p>
+<h2 is-upgraded><strong>The Disk</strong></h2>
+<p>You will need to create a disk that is large enough for the AOSP project, the necessary tools, and  space to build the project. </p>
+<h3 is-upgraded><strong>Create a Disk</strong></h3>
+<p>Create a disk named <strong>aospdisk</strong> that is 1000 Gb and uses Ubuntu 22.04 in the us-south1-a zone by running command: </p>
+<pre>$ gcloud compute disks create aospdisk --image-project ubuntu-os-cloud --image-family ubuntu-2204-lts --zone us-south1-a --size=1000</pre>
+<p>You will be prompted to enable the prerequisite API, select:</p>
+<pre>y</pre>
+<p>Ignore any warnings that show up, and notice that the disk was successfully created and named <strong>aospdisk</strong></p>
+<p class="image-container"><img style="width: 624.00px" src="img/4268a818af1a4b1.png"></p>
+<h2 is-upgraded><strong>The Image</strong></h2>
+<p>You will need an image that has the OS for your VM instance and nested virtualization enabled.</p>
+<h3 is-upgraded><strong>Create an Image</strong></h3>
+<p>Create an image from the <strong>aospdisk</strong> you created in the previous step. Set the zone to us-south1-a, and add the nested virtualization license. Run the command:</p>
+<pre>$ gcloud compute images create aospimage --source-disk aospdisk --source-disk-zone us-south1-a --licenses &#34;https://www.googleapis.com/compute/v1/projects/vm-options/global/licenses/enable-vmx&#34;</pre>
+<p class="image-container"><img style="width: 624.00px" src="img/8752d863c619e03e.png"></p>
+<h2 is-upgraded><strong>The Instance</strong></h2>
+<p>Finally, you need to create a VM instance from the <strong>aospimage</strong> you created in the previous step. Name the VM instance <strong>aosp1</strong>. </p>
+<h3 is-upgraded><strong>Create a VM Instance</strong></h3>
+<p>The VM instance is the machine which will bring the disk and image together to create an environment for building the AOSP image. Run the command: </p>
+<pre>$ gcloud compute instances create aosp1 --zone us-west1-a --image aospimage</pre>
+<p class="image-container"><img style="width: 624.00px" src="img/6f363e5653ceef90.png"></p>
+<h2 is-upgraded><strong>Verify </strong></h2>
+<p>We should now see the VM Instance in the Google Cloud console.</p>
+<h3 is-upgraded><strong>Verify VM Instance</strong></h3>
+<p>In your browser, in the Google Cloud console, click the <strong>navigation bar</strong> in the upper left corner to expand the menu. Then hover over the <strong>Compute Engine </strong>menu item which will expand another menu, then click the <strong>VM Instances</strong> menu item.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/302be1a470f10ad4.png"></p>
+<p>Verify that the <strong>aosp1</strong> VM Instance is present and running.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/c4cde2cdd94f937c.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Setup Environment" duration="50">
+        <p>There are numerous packages that need to be installed prior to downloading the AOSP and creating a build. Let&#39;s start.</p>
+<h2 is-upgraded><strong>Update </strong></h2>
+<p>Let&#39;s first get familiar with the VM instance and navigate around a little bit.</p>
+<h3 is-upgraded>SSH in to the Instance</h3>
+<p>You can SSH into the VM Instance by clicking the <strong>SSH</strong> button on the right side on the <strong>aosp1</strong> instance.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/3fe821a73ffbbfeb.png"></p>
+<p class="image-container"><img style="width: 624.00px" src="img/d887e614303340a5.png"></p>
+<h3 is-upgraded><strong>Update the Packages</strong></h3>
+<p>Update the packages:<br></p>
+<pre>$ sudo apt-get update</pre>
+<h3 is-upgraded><strong>Check Core Count</strong></h3>
+<p>Let&#39;s see how many cores we have on the VM Instance. Run: <br></p>
+<pre>$ grep -cw vmx /proc/cpuinfo</pre>
+<p class="image-container"><img style="width: 624.00px" src="img/27e0d0a954cb506e.png"></p>
+<p>We only have 2 cores, that is not enough... Let&#39;s add some more.</p>
+<h2 is-upgraded><strong>Add More Cores</strong></h2>
+<p>We need more cores to build the AOSP image, otherwise it will take a very long time to build an image.</p>
+<h3 is-upgraded><strong>Shut Down the VM Instance</strong></h3>
+<p>Close the SSH-in-browser window by clicking the <strong>x</strong> button in the upper left corner of the browser. Then, go to the Google Cloud console, where your VM Instance is, and click the <strong>checkbox</strong> for the <strong>aosp1</strong> VM Instance. Then click the <strong>STOP</strong> button to shut down the VM Instance.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/fef89a833f1f22a3.png"></p>
+<p class="image-container"><img style="width: 624.00px" src="img/192cba3bdf020d08.png"></p>
+<h3 is-upgraded><strong>Edit the VM Instance</strong></h3>
+<p>Once the VM Instance is stopped, click the <strong>aosp1</strong> link under the <strong>Name</strong> column.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/9ef0e92c3fab0339.png"></p>
+<p>Then click the <strong>Edit</strong> button.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/36ea2d39462d0e50.png"></p>
+<p>Scroll down to the <strong>Machine type</strong> section, then click the <strong>Custom</strong> tab.</p>
+<p>Change the <strong>Cores</strong> to <code>16</code>, and change the <strong>Memory</strong> to <code>64</code></p>
+<p>Then click the <strong>Save</strong> button.</p>
+<p class="image-container"><img style="width: 624.00px" src="img/3ce527f13585f6f6.png"></p>
+<p>Then click the <strong>Back Arrow</strong> next to the instance name <strong>aosp1</strong> to return back to the VM Instances page.</p>
+<p class="image-container"><img style="width: 671.34px" src="img/18da426498f1c81d.png"></p>
+<p>Start the VM Instance again. Click the <strong>checkbox</strong> for the <strong>aosp1</strong> image, and click the <strong>Start/Resume</strong> button.</p>
+<p>\</p>
+<p>SSH back into the VM instance by clicking the <strong>SSH </strong>button</p>
+<p class="image-container"><img style="width: 624.00px" src="img/35bc23eaffb296bf.png"></p>
+<h2 is-upgraded><strong>Install Required Packages</strong></h2>
+<p><a href="https://source.android.com/docs/setup/start/requirements" target="_blank">AOSP setup docs</a></p>
+<ol type="1" start="1">
+<li>From the SSH-in-browser, make a directory called <strong>aosp</strong> by running the command <br></li>
+</ol>
+<pre>$ mkdir aosp</pre>
+<ol type="1" start="2">
+<li>cd into the <strong>aosp</strong> directory by running the command <br></li>
+</ol>
+<pre>$ cd aosp</pre>
+<ol type="1" start="3">
+<li>Install AOSP required packages by running: <br></li>
+</ol>
+<pre>$ sudo apt-get install git-core gnupg flex bison build-essential zip curl zlib1g-dev libc6-dev-i386 x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip fontconfig</pre>
+<p class="image-container"><img style="width: 624.00px" src="img/ec562d3e3ba6d38b.png"></p>
+<ol type="1" start="4">
+<li>Update the packages: <br></li>
+</ol>
+<pre>$ sudo apt-get update</pre>
+<ol type="1" start="5">
+<li>Install the <strong>Repo</strong> package: <br></li>
+</ol>
+<pre>$ sudo apt-get install repo</pre>
+<p class="image-container"><img style="width: 624.00px" src="img/2470e04a112752f0.png"></p>
+<ol type="1" start="6">
+<li>Verify that <strong>Repo</strong> is installed: <br></li>
+</ol>
+<pre>$ repo version</pre>
+<ol type="1" start="7">
+<li>Set your git config email property: <br></li>
+</ol>
+<pre>$ git config --global user.email &#34;youremail&#34;</pre>
+<ol type="1" start="8">
+<li>Set your git config name property: <br></li>
+</ol>
+<pre>$ git config --global user.name &#34;your name&#34;</pre>
+<p>Now we are ready to download the Android Open Source Project.</p>
+<h2 is-upgraded><strong>Download the AOSP</strong></h2>
+<p><a href="https://source.android.com/docs/setup/download" target="_blank">AOSP Download Docs</a></p>
+<p>Now that the required tools and packages are installed, we are ready to download the AOSP project.</p>
+<ol type="1" start="1">
+<li>Initialize the repository by running from the <strong>aosp</strong> directory:</li>
+</ol>
+<pre>$ repo init -b android-latest-release -u https://android.googlesource.com/platform/manifest</pre>
+<p class="image-container"><img style="width: 624.00px" src="img/c0b8b6f64e08b81e.png"></p>
+<ol type="1" start="2">
+<li>Then sync the repo(this will take about 30 minutes): </li>
+</ol>
+<pre>$ repo sync</pre>
+<p>Success!</p>
+<p class="image-container"><img style="width: 624.00px" src="img/73c5060a5ff3b15e.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Last Step" duration="360">
+        <p><a href="https://source.android.com/docs/setup/build/building" target="_blank">AOSP Build Docs</a></p>
+<p>Now that we have synced the repo, we can create a build!</p>
+<ol type="1" start="1">
+<li>Run this from the <strong>aosp</strong> directory to load the environment variables into the terminals session:</li>
+</ol>
+<pre>$ source build/envsetup.sh</pre>
+<ol type="1" start="2">
+<li>Then specify which release to build:</li>
+</ol>
+<pre>$ lunch aosp_cf_x86_64_only_phone-aosp_current-userdebug</pre>
+<ol type="1" start="3">
+<li>Finally, start a build:</li>
+</ol>
+<pre>$ m</pre>
+<p class="image-container"><img style="width: 624.00px" src="img/9b4cca493945d6aa.png"></p>
+<p>It took about 6 hours to finish. The results of the build are in the <strong>out</strong> directory.<img style="width: 624.00px" src="img/f436645c72a39529.png"></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Congratulations" duration="0">
+        <p>Congratulations, you&#39;ve successfully built your first AOSP image! </p>
+<p>You created a VM Instance to host your build environment, and you installed all the required packages to download the project and create builds.</p>
+<p>You now know the key steps required to create your own AOSP build environment.</p>
+<h2 is-upgraded><strong>What&#39;s next?</strong></h2>
+<p>Check out some of these codelabs...</p>
+<ul>
+<li>Running the build on a Cuttlefish Emulator</li>
+</ul>
+<h2 is-upgraded><strong>Reference docs</strong></h2>
+<ul>
+<li><a href="https://source.android.com/docs/setup/start" target="_blank">AOSP docs</a></li>
+<li><a href="https://cloud.google.com/cli#documentation" target="_blank">gcloud docs</a></li>
+<li><a href="https://cloud.google.com/compute/docs/instances" target="_blank">Google Cloud Compute Engine docs</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

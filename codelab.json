@@ -3,7 +3,7 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2025-06-22T04:03:46Z",
+  "updated": "2025-06-22T04:07:49Z",
   "id": "setup-build-environment",
   "duration": 450,
   "title": "Setup Environment",
@@ -21,6 +21,6 @@
     "android",
     "aosp"
   ],
-  "feedback": "https://github.com/googlecodelabs/your-first-pwapp/issues",
+  "feedback": "https://github.com/ktenzweiler/ktenzweiler.github.io/issues",
   "url": "setup-build-environment"
 }
